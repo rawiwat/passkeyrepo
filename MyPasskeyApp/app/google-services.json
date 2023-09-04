@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1017839785843",
+    "firebase_url": "https://passkey-6197a-default-rtdb.firebaseio.com",
     "project_id": "passkey-6197a",
     "storage_bucket": "passkey-6197a.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1017839785843-pjcmh2do77g64rf5ntggghamkjnftmgv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mypasskeyapp",
+            "certificate_hash": "b0ef13d7ce2424dca57eaaad4ad3bc43d976b773"
+          }
+        },
         {
           "client_id": "1017839785843-5ilttb7s8es2sg2ebvp5cun6o81tfmdi.apps.googleusercontent.com",
           "client_type": 3

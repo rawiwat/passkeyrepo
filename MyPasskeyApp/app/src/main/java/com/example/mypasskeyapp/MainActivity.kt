@@ -12,17 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.credentials.CredentialManager
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.mypasskeyapp.ui.compose.Login
 import com.example.mypasskeyapp.ui.compose.MainScreen
 import com.example.mypasskeyapp.ui.compose.Note
 import com.example.mypasskeyapp.ui.compose.Register
 import com.example.mypasskeyapp.ui.theme.MyPasskeyAppTheme
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -116,14 +115,23 @@ fun App(
             )
         }
 
-        composable(route = "note") {
-            Note(
-                navController = navController,
-                myRef = myRef,
-                context = context,
-                credentialManager = credentialManager,
-                myAuth = myAuth
+        composable(
+            route = "note/{user}",
+            arguments = listOf(
+                navArgument("user")
+                {type = NavType.StringType}
             )
+        ) {
+            it.arguments?.getString("user")?.let { it1 ->
+                Note(
+                    navController = navController,
+                    myRef = myRef,
+                    context = context,
+                    credentialManager = credentialManager,
+                    myAuth = myAuth,
+                    name = it1
+                )
+            }
         }
     }
 }

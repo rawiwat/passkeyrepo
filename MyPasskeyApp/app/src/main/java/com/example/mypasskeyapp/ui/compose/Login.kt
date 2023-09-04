@@ -2,6 +2,7 @@ package com.example.mypasskeyapp.ui.compose
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,11 +59,9 @@ fun Login(
         mutableStateOf("")
     }
     val getPasswordOption = GetPasswordOption()
-    //will move these into appropriate compose function later
-    // Get passkey from the user's public key credential provider.
 
     val getPublicKeyCredentialOption = GetPublicKeyCredentialOption(
-        requestJson = fetchAuthJsonFromServer(context)// TBA
+        requestJson = fetchAuthJsonFromServer(context)
     )
 
     val getCredRequest = GetCredentialRequest(
@@ -101,10 +100,6 @@ fun Login(
 
             Button(onClick = {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val data = getSavedCredentials(credentialManager, context)
-                    data?.let {
-                        navController.navigate("note")
-                    }
                 }
             }) {
                 Text(text = "Login With Password")
@@ -113,15 +108,25 @@ fun Login(
             Button(onClick = {
                 CoroutineScope(Dispatchers.Main).launch {
                     try {
-                        val result = credentialManager.getCredential(
+                        /*val result = credentialManager.getCredential(
                             // Use an activity-based context to avoid undefined system UI
                             // launching behavior.
                             context = context,
                             request = getCredRequest
                         )
-                        handleSignIn(result, myAuth, myRef,context,navController)
+                        handleSignIn(result, myAuth, myRef,context,navController,userName).let {
+                            sendSignInResponseToServer()
+                            navController.navigate("note/$userName")
+                        }*/
+                        //
+                        val data = getSavedCredentials(credentialManager, context)
+                        data?.let {
+                            sendSignInResponseToServer()
+                            navController.navigate("note/$userName")
+                        }
                     } catch (e : GetCredentialException) {
-                        handleFailureGet(e)
+                        println("get credential error: ,$e")
+                        handleFailureGet(e, context = context)
                     }
                 }
             }) {
@@ -129,6 +134,10 @@ fun Login(
             }
         }
     }
+}
+
+fun sendSignInResponseToServer(): Boolean {
+    return true
 }
 
 
@@ -145,21 +154,19 @@ suspend fun getSavedCredentials(credentialManager: CredentialManager,context:Con
                 )
             )
         )
-    } catch (e: Exception) {
+  } catch (e: Exception) {
         Log.e("Error","An error occurred while authenticating through saved credentials")
         Log.e("Auth", "getCredential failed with exception: " + e.message.toString())
+        Toast.makeText(context,e.message,Toast.LENGTH_LONG).show()
         return null
     }
-
-    if (result.credential is PublicKeyCredential) {
-        val cred = result.credential as PublicKeyCredential
-        DataProvider.setSignedInThroughPasskeys(true)
-        return "Passkey: ${cred.authenticationResponseJson}"
+    val credential = result.credential
+    if (credential is PublicKeyCredential) {
+        return credential.authenticationResponseJson
     }
-    if (result.credential is PasswordCredential) {
-        val cred = result.credential as PasswordCredential
+    if (credential is PasswordCredential) {
         DataProvider.setSignedInThroughPasskeys(false)
-        return "Got Password - User:${cred.id} Password: ${cred.password}"
+        return "${credential.id},${credential.password}"
     }
     /*if (result.credential is CustomCredential) {
         //If you are also using any external sign-in libraries, parse them here with the

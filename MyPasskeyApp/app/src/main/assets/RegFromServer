@@ -1,7 +1,7 @@
 {
-    "challenge": "<challenge>",
+    "challenge": "HjBbH__fbLuzy95AGR31yEARA0EMtKlY0NrV5oy3NQw",
     "rp": {
-        "id": "passkeys-codelab.glitch.me",
+        "id": "passkey-6197a.web.app",
         "name": "MyPasskeyApp"
     },
     "pubKeyCredParams": [

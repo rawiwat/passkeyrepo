@@ -26,13 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CreatePasswordRequest
 import androidx.credentials.CreatePasswordResponse
+import androidx.credentials.CreatePublicKeyCredentialResponse
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.CreateCredentialException
 import androidx.navigation.NavController
+import com.example.mypasskeyapp.CreatePasskeyResponseData
 import com.example.mypasskeyapp.DataProvider
 import com.example.mypasskeyapp.createPasskey
 import com.example.mypasskeyapp.ui.theme.MyPasskeyAppTheme
 import com.google.firebase.database.DatabaseReference
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -120,8 +123,13 @@ fun Register(
                                 )
 
                                 data.let {
+                                    val responseData = Gson().fromJson(
+                                        (data as CreatePublicKeyCredentialResponse).registrationResponseJson,CreatePasskeyResponseData::class.java
+                                    )
+                                    println(responseData)
+                                    myRef.child("Users").child(name).child("passkey").push().setValue(responseData)
                                     DataProvider.setSignedInThroughPasskeys(true)
-                                    navController.navigate("note")
+                                    navController.navigate("note/$name")
                                 }
                             } else {
                                 Toast.makeText(context, "Name can't be empty", Toast.LENGTH_SHORT)
@@ -158,7 +166,7 @@ fun registerPassword(
                     // system UI launching behavior.
             context, createPasswordRequest
             ) as CreatePasswordResponse
-            navController.navigate("note")
+            navController.navigate("note{$username}")
         } catch (e: CreateCredentialException) {
             Toast.makeText(context,e.message,Toast.LENGTH_SHORT).show()
         }

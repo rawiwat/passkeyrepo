@@ -7,9 +7,7 @@
     "target" : {
       "namespace" : "android_app",
       "package_name" : "com.example.mypasskeyapp",
-      "sha256_cert_fingerprints" : [
-        "1F:62:87:BD:AE:9F:FA:E1:11:68:F6:14:73:DA:36:C4:67:5A:8D:B4:FC:6C:0A:81:0B:20:0C:41:EB:F7:CD:78"
-      ]
+      "sha256_cert_fingerprints" :["1F:62:87:BD:AE:9F:FA:E1:11:68:F6:14:73:DA:36:C4:67:5A:8D:B4:FC:6C:0A:81:0B:20:0C:41:EB:F7:CD:78"]
     }
   }
 ]
